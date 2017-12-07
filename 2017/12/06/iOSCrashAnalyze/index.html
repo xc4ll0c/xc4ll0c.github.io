@@ -5,14 +5,27 @@
   
 
   
-  <title>xc4ll0c</title>
+  <title>iOS崩溃crash收集及分析 | xc4ll0c</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="xc4ll0c">
-<meta property="og:url" content="http://yoursite.com/index.html">
+  <meta name="description" content="前言崩溃的出现意味着代码出现了问题，通常的解决路径是根据测试/用户/日志文件的行为描述，试图重现崩溃，定位到具体的代码位置，分析出现的原因，找到根治的办法，最后验证解决方案以确认崩溃被修复。那么我们该如何去搜集、分析、解决崩溃呢，请看下文。 如何收集崩溃信息？官方渠道XCode Organizer在Xcode-&amp;gt;Window-&amp;gt;Organizer选择已上架的App看以查看到每个版本中A">
+<meta name="keywords" content="崩溃定位,崩溃分析">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS崩溃crash收集及分析">
+<meta property="og:url" content="http://yoursite.com/2017/12/06/iOSCrashAnalyze/index.html">
 <meta property="og:site_name" content="xc4ll0c">
+<meta property="og:description" content="前言崩溃的出现意味着代码出现了问题，通常的解决路径是根据测试/用户/日志文件的行为描述，试图重现崩溃，定位到具体的代码位置，分析出现的原因，找到根治的办法，最后验证解决方案以确认崩溃被修复。那么我们该如何去搜集、分析、解决崩溃呢，请看下文。 如何收集崩溃信息？官方渠道XCode Organizer在Xcode-&amp;gt;Window-&amp;gt;Organizer选择已上架的App看以查看到每个版本中A">
+<meta property="og:image" content="http://yoursite.com/2017/12/06/images/iOSCrashAnalyze/ItunesConnectShot.png">
+<meta property="og:image" content="http://yoursite.com/2017/12/06/images/iOSCrashAnalyze/tingyun1.png">
+<meta property="og:image" content="http://yoursite.com/2017/12/06/images/iOSCrashAnalyze/tingyun2.png">
+<meta property="og:image" content="http://yoursite.com/2017/12/06/images/iOSCrashAnalyze/bugly1.png">
+<meta property="og:image" content="http://yoursite.com/2017/12/06/images/iOSCrashAnalyze/bugly2.png">
+<meta property="og:image" content="http://yoursite.com/2017/12/06/images/iOSCrashAnalyze/umeng.png">
+<meta property="og:image" content="http://yoursite.com/2017/12/06/images/iOSCrashAnalyze/weakassign.png">
+<meta property="og:updated_time" content="2017-12-07T09:48:26.190Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="xc4ll0c">
+<meta name="twitter:title" content="iOS崩溃crash收集及分析">
+<meta name="twitter:description" content="前言崩溃的出现意味着代码出现了问题，通常的解决路径是根据测试/用户/日志文件的行为描述，试图重现崩溃，定位到具体的代码位置，分析出现的原因，找到根治的办法，最后验证解决方案以确认崩溃被修复。那么我们该如何去搜集、分析、解决崩溃呢，请看下文。 如何收集崩溃信息？官方渠道XCode Organizer在Xcode-&amp;gt;Window-&amp;gt;Organizer选择已上架的App看以查看到每个版本中A">
+<meta name="twitter:image" content="http://yoursite.com/2017/12/06/images/iOSCrashAnalyze/ItunesConnectShot.png">
   
     <link rel="alternate" href="/atom.xml" title="xc4ll0c" type="application/atom+xml">
   
@@ -59,9 +72,7 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-    <article id="post-iOSCrashAnalyze" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-iOSCrashAnalyze" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/12/06/iOSCrashAnalyze/" class="article-date">
   <time datetime="2017-12-06T10:44:48.000Z" itemprop="datePublished">2017-12-06</time>
@@ -78,8 +89,8 @@
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/12/06/iOSCrashAnalyze/">iOS崩溃crash收集及分析</a>
+    <h1 class="article-title" itemprop="name">
+      iOS崩溃crash收集及分析
     </h1>
   
 
@@ -164,11 +175,9 @@
     </footer>
   </div>
   
-</article>
-
-
+    
   
-
+</article>
 
 </section>
         
