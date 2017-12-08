@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="踩坑记录,崩溃分析," />
 
 
 
@@ -79,14 +79,18 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="tags">
-<meta property="og:url" content="http://yoursite.com/tags/index.html">
+<meta name="description" content="_WTFCrash 崩溃信息线程：WebThread崩溃栈： 123456789101112131415161718192021JavaScriptCore    0x1835449e4    _WTFCrash + 72JavaScriptCore    0x1835449dc    _WTFCrash + 64JavaScriptCore    0x183445864    JSC::JSLo">
+<meta name="keywords" content="踩坑记录,崩溃分析">
+<meta property="og:type" content="article">
+<meta property="og:title" content="记一次UIWebView _WTFCrash崩溃定位">
+<meta property="og:url" content="http://yoursite.com/2017/12/08/DebugWebViewSignal11Crash/index.html">
 <meta property="og:site_name" content="xc4ll0c">
+<meta property="og:description" content="_WTFCrash 崩溃信息线程：WebThread崩溃栈： 123456789101112131415161718192021JavaScriptCore    0x1835449e4    _WTFCrash + 72JavaScriptCore    0x1835449dc    _WTFCrash + 64JavaScriptCore    0x183445864    JSC::JSLo">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-12-08T03:03:33.430Z">
+<meta property="og:updated_time" content="2017-12-08T09:54:48.055Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="tags">
+<meta name="twitter:title" content="记一次UIWebView _WTFCrash崩溃定位">
+<meta name="twitter:description" content="_WTFCrash 崩溃信息线程：WebThread崩溃栈： 123456789101112131415161718192021JavaScriptCore    0x1835449e4    _WTFCrash + 72JavaScriptCore    0x1835449dc    _WTFCrash + 64JavaScriptCore    0x183445864    JSC::JSLo">
 
 
 
@@ -116,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/tags/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/12/08/DebugWebViewSignal11Crash/"/>
 
 
 
 
 
-  <title>tags | xc4ll0c</title>
+  <title>记一次UIWebView _WTFCrash崩溃定位 | xc4ll0c</title>
   
 
 
@@ -281,40 +285,188 @@
 
   <div id="posts" class="posts-expand">
     
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/08/DebugWebViewSignal11Crash/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wenZheng zhang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="xc4ll0c">
+    </span>
+
     
-    
-    <div class="post-block page">
       <header class="post-header">
 
-	<h1 class="post-title" itemprop="name headline">tags</h1>
-
-
-
-</header>
-
-      
-      
-      
-      <div class="post-body">
         
         
-          <div class="tag-cloud">
-            <div class="tag-cloud-title">
-                目前共计 3 个标签
-            </div>
-            <div class="tag-cloud-tags">
-              <a href="/tags/崩溃分析/" style="font-size: 30px; color: #111">崩溃分析</a> <a href="/tags/崩溃定位/" style="font-size: 12px; color: #ccc">崩溃定位</a> <a href="/tags/踩坑记录/" style="font-size: 21px; color: #6f6f6f">踩坑记录</a>
-            </div>
-          </div>
+          <h1 class="post-title" itemprop="name headline">记一次UIWebView _WTFCrash崩溃定位</h1>
         
-      </div>
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-08T16:28:20+08:00">
+                2017-12-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/踩坑记录/" itemprop="url" rel="index">
+                    <span itemprop="name">踩坑记录</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/踩坑记录/崩溃定位及预防/" itemprop="url" rel="index">
+                    <span itemprop="name">崩溃定位及预防</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
       
+
+      
+        <h1 id="WTFCrash-崩溃信息"><a href="#WTFCrash-崩溃信息" class="headerlink" title="_WTFCrash 崩溃信息"></a>_WTFCrash 崩溃信息</h1><p>线程：WebThread<br>崩溃栈：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">JavaScriptCore    0x1835449e4    _WTFCrash + 72</span><br><span class="line">JavaScriptCore    0x1835449dc    _WTFCrash + 64</span><br><span class="line">JavaScriptCore    0x183445864    JSC::JSLock::DropAllLocks::DropAllLocks(JSC::VM*) + 0</span><br><span class="line">WebCore           0x18f6ffc44    SendDelegateMessage(NSInvocation*)</span><br><span class="line">CoreFoundation    0x181cb6230    ____forwarding___ + 440</span><br><span class="line">CoreFoundation    0x181bbab6c    ___forwarding_prep_0___ + 92</span><br><span class="line">WebKitLegacy      0x1905a717c    -[_WebSafeForwarder forwardInvocation:]</span><br><span class="line">WebCore           0x1900c9440    &lt;redacted&gt;</span><br><span class="line">WebCore           0x18f70a348    &lt;redacted&gt;</span><br><span class="line">WebCore           0x18f73ee68    &lt;redacted&gt;</span><br><span class="line">WebCore           0x18f73ecf4    __ZN7WebCore11FrameLoader4loadERKNS_16FrameLoadRequestE</span><br><span class="line">WebKitLegacy      0x190578c00    &lt;redacted&gt;</span><br><span class="line">WebCore           0x1903ae23c    &lt;redacted&gt;</span><br><span class="line">CoreFoundation    0x181c6a9ec    ___CFRUNLOOP_IS_CALLING_OUT_TO_A_SOURCE0_PERFORM_FUNCTION__ + 24</span><br><span class="line">CoreFoundation    0x181c69c90    ___CFRunLoopDoSources0 + 264</span><br><span class="line">CoreFoundation    0x181c67d40    ___CFRunLoopRun + 712</span><br><span class="line">CoreFoundation    0x181b950a4    _CFRunLoopRunSpecific + 396</span><br><span class="line">WebCore           0x18f6e4858    &lt;redacted&gt;</span><br><span class="line">libsystem_pthread.dylib    0x192c2fe80    &lt;redacted&gt;</span><br><span class="line">libsystem_pthread.dylib    0x192c2fddc    &lt;redacted&gt;</span><br><span class="line">libsystem_pthread.dylib    0x192c2cfb0    _thread_start</span><br></pre></td></tr></table></figure>
+<p>用户使用轨迹：任意WUIWebView实例，用户浏览内链内容时容易出现。<br>系统版本：集中在iOS 8上。</p>
+<h1 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h1><p>根据<a href="https://bugs.webkit.org/show_bug.cgi?id=139654" target="_blank" rel="noopener">Bug 139654: DropAllLocks RELEASE_ASSERT on iOS</a>的bug分析，这应该是UIWebView在iOS 8上的bug。</p>
+<h1 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h1><p>既然这是iOS 8系统的Bug，且我们AppiOS 10/9的系统版本用户占比较大，可以直接忽略此崩溃。</p>
+<h1 id="无心插柳柳成荫"><a href="#无心插柳柳成荫" class="headerlink" title="无心插柳柳成荫"></a>无心插柳柳成荫</h1><p>在含有这个崩溃的版本里，H5与App的通信，是App通过UIWebView的私有属性获取到了UIWebView实例的JSContext，在context上设置全局bridge对象来实现的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">JSContext *context = [webView valueForKeyPath:@&quot;documentView.webView.mainFrame.javaScriptContext&quot;];</span><br></pre></td></tr></table></figure>
+<p>随着iOS审核对私有API使用变的严格，同时私有API也有可能在后续的系统版本中发生变化，所以决定在新版中使用拦截含特定scheme的url实现H5于App间的通信。然后在这个新版本中iOS 8上就没有出现过_WTFCrash了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">SendDelegateMessage(NSInvocation*)</span><br><span class="line">CoreFoundation    0x181cb6230    ____forwarding___ + 440</span><br><span class="line">CoreFoundation    0x181bbab6c    ___forwarding_prep_0___ + 92</span><br><span class="line">WebKitLegacy      0x1905a717c    -[_WebSafeForwarder forwardInvocation:]</span><br></pre></td></tr></table></figure>
+<p>结合上面的崩溃栈，可能这和js-&gt;javascriptCore-&gt;JSContext-&gt;OC_ExportObject消息传递过程中的锁管理有一定的关系。</p>
+
       
     </div>
     
     
     
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/踩坑记录/" rel="tag"># 踩坑记录</a>
+          
+            <a href="/tags/崩溃分析/" rel="tag"># 崩溃分析</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/12/08/DebugSignal5Crash/" rel="next" title="记一次Signal 5崩溃定位（NotDone）">
+                <i class="fa fa-chevron-left"></i> 记一次Signal 5崩溃定位（NotDone）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
   </div>
 
 
@@ -347,8 +499,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -424,6 +585,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#WTFCrash-崩溃信息"><span class="nav-number">1.</span> <span class="nav-text"><a href="#WTFCrash-&#x5D29;&#x6E83;&#x4FE1;&#x606F;" class="headerlink" title="_WTFCrash &#x5D29;&#x6E83;&#x4FE1;&#x606F;"></a>_WTFCrash &#x5D29;&#x6E83;&#x4FE1;&#x606F;</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#分析"><span class="nav-number">2.</span> <span class="nav-text"><a href="#&#x5206;&#x6790;" class="headerlink" title="&#x5206;&#x6790;"></a>&#x5206;&#x6790;</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#解决办法"><span class="nav-number">3.</span> <span class="nav-text"><a href="#&#x89E3;&#x51B3;&#x529E;&#x6CD5;" class="headerlink" title="&#x89E3;&#x51B3;&#x529E;&#x6CD5;"></a>&#x89E3;&#x51B3;&#x529E;&#x6CD5;</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#无心插柳柳成荫"><span class="nav-number">4.</span> <span class="nav-text"><a href="#&#x65E0;&#x5FC3;&#x63D2;&#x67F3;&#x67F3;&#x6210;&#x836B;" class="headerlink" title="&#x65E0;&#x5FC3;&#x63D2;&#x67F3;&#x67F3;&#x6210;&#x836B;"></a>&#x65E0;&#x5FC3;&#x63D2;&#x67F3;&#x67F3;&#x6210;&#x836B;</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
