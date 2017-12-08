@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search> 
+  
+    
+    <entry>
+      <title><![CDATA[iOS崩溃crash收集及分析]]></title>
+      <url>/2017/12/06/iOSCrashAnalyze/</url>
+      <content type="html"><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>崩溃的出现意味着代码出现了问题，通常的解决路径是根据测试/用户/日志文件的行为描述，试图重现崩溃，定位到具体的代码位置，分析出现的原因，找到根治的办法，最后验证解决方案以确认崩溃被修复。那么我们该如何去搜集、分析、解决崩溃呢，请看下文。</p>
+<h1 id="如何收集崩溃信息？"><a href="#如何收集崩溃信息？" class="headerlink" title="如何收集崩溃信息？"></a>如何收集崩溃信息？</h1><h2 id="官方渠道XCode-Organizer"><a href="#官方渠道XCode-Organizer" class="headerlink" title="官方渠道XCode Organizer"></a>官方渠道XCode Organizer</h2><p>在Xcode-&gt;Window-&gt;Organizer选择已上架的App看以查看到每个版本中App的崩溃情况，如下图：<br><img src="/images/iOSCrashAnalyze/ItunesConnectShot.png" alt=""><br>优点：  </p>
+<ol>
+<li>自动符号化崩溃栈，甚至可以直接打开项目，跳转到相关文件代码</li>
+</ol>
+<p>缺点：  </p>
+<ol>
+<li>只有崩溃数量及不同机型/系统下的占比，没有崩溃率。</li>
+<li>只有崩溃栈信息，没有当时用户的操作记录，对于像上图中的崩溃，仅有崩溃栈信息，很难下手处理。</li>
+</ol>
+<h2 id="第三方服务：听云-Bugly-友盟"><a href="#第三方服务：听云-Bugly-友盟" class="headerlink" title="第三方服务：听云/Bugly/友盟"></a>第三方服务：听云/Bugly/友盟</h2><h3 id="听云"><a href="#听云" class="headerlink" title="听云"></a>听云</h3><p>听云收集的崩溃信息如下：<br><img src="/images/iOSCrashAnalyze/tingyun1.png" alt=""><br><img src="/images/iOSCrashAnalyze/tingyun2.png" alt=""><br>听云记录的信息比较全面，包含崩溃率统计、崩溃栈、崩溃轨迹。</p>
+<h3 id="Bugly"><a href="#Bugly" class="headerlink" title="Bugly"></a>Bugly</h3><p>Bugly收集的信息如下：<br><img src="/images/iOSCrashAnalyze/bugly1.png" alt=""><br><img src="/images/iOSCrashAnalyze/bugly2.png" alt=""><br>Bugly收集到的信息包含崩溃率统计、崩溃栈，可以关联崩溃时的记录的日志。在日志中记录VC的打开记录，实现类似于听云的崩溃轨迹记录。</p>
+<h3 id="友盟"><a href="#友盟" class="headerlink" title="友盟"></a>友盟</h3><p>友盟收集的信息如下：<br><img src="/images/iOSCrashAnalyze/umeng.png" alt=""><br>友盟收集到的信息包含崩溃率统计、崩溃栈。</p>
+<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>优点：  </p>
+<ol>
+<li>除了崩溃时的运行栈外，还可以附带当时用户的使用轨迹！这非常有利于我们重建当时的崩溃场景！（友盟除外）</li>
+</ol>
+<p>缺点：  </p>
+<ol>
+<li>需要自行上传DSYM文件。</li>
+<li>对App有一定的入侵，可以抓取到App行为信息。</li>
+</ol>
+<h2 id="DIY自行构建"><a href="#DIY自行构建" class="headerlink" title="DIY自行构建"></a>DIY自行构建</h2><p>使用如<a href="https://github.com/kstenerud/KSCrash" target="_blank" rel="noopener">KSCrash</a>或干脆自己写一个崩溃监测库，实现类似于上述第三方服务的功能。优点当然是可以实现任意想要的功能，但是开发成本比较大。</p>
+<h1 id="如何符号化崩溃信息？"><a href="#如何符号化崩溃信息？" class="headerlink" title="如何符号化崩溃信息？"></a>如何符号化崩溃信息？</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">0   CoreFoundation                      0x0000000183491d1c &lt;redacted&gt; + 148</span><br><span class="line">1   libobjc.A.dylib                     0x00000001826e0528 objc_exception_throw + 56</span><br><span class="line">2   CoreFoundation                      0x0000000183491c4c &lt;redacted&gt; + 0</span><br><span class="line">3   YouAppsBinary                       0x100817c80 YouAppsBinary + 8486016</span><br><span class="line">4   libsystem_platform.dylib            0x00000001830b7b34 _sigtramp + 36</span><br><span class="line">5   MediaToolbox                        0x0000000187982300 FigPhotoJPEGShouldUseHardwareDecode + 76</span><br><span class="line">6   ImageIO                             0x00000001853e87ec &lt;redacted&gt; + 188</span><br><span class="line">7   ImageIO                             0x00000001853e9180 &lt;redacted&gt; + 312</span><br><span class="line">8   ImageIO                             0x00000001855447b0 &lt;redacted&gt; + 80</span><br><span class="line">9   ImageIO                             0x0000000185542d8c &lt;redacted&gt; + 108</span><br><span class="line">10  ImageIO                             0x00000001853cac88 &lt;redacted&gt; + 312</span><br><span class="line">11  ImageIO                             0x00000001853c8554 &lt;redacted&gt; + 428</span><br></pre></td></tr></table></figure>
+<p>在没有符号化崩溃信息之前，我们只能看到包含镜像名+函数内存地址的崩溃栈，没法得知具体的崩溃函数及行号，这时就需要使用DSYM文件对崩溃信息进行符号化。</p>
+<h2 id="DSYM文件"><a href="#DSYM文件" class="headerlink" title="DSYM文件"></a>DSYM文件</h2><p>XCode编译项目之后，会在yourApp.app同步目录下生成一个yourApp.app.dsym的bundle，里面包含了16进制函数地址映射到源文件函数行号的中转文件。有了这个文件，就可以将内存地址转换为崩溃发生时的源文件及行号。每个版本的app/dsym都有唯一匹配的UUID，只有当两者UUID唯一匹配时，16进制符号化出来的信息才是正确的。app/dysm的UUID可以使用以下命令查看。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dwarfdump --uuid /xx/xx.app</span><br><span class="line">dwarfdump --uuid /xx/xx.app.dsym</span><br></pre></td></tr></table></figure>
+<h2 id="如何符号化"><a href="#如何符号化" class="headerlink" title="如何符号化"></a>如何符号化</h2><p>xcode的organizer的可以自动符号化它所及收集到的崩溃信息。将匹配的dsym文件上传到听云/Bugly，也可以得到符号化的崩溃信息。若想自己查看也可以通过以下命令查看:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xcrun atos -arch arm64 -o /xxxx/xxx.app.dsym 函数地址</span><br></pre></td></tr></table></figure>
+<h1 id="如何分析崩溃信息？"><a href="#如何分析崩溃信息？" class="headerlink" title="如何分析崩溃信息？"></a>如何分析崩溃信息？</h1><p>这里有一篇不错的<a href="http://www.cocoachina.com/industry/20130725/6677.html" target="_blank" rel="noopener">崩溃分析文章</a>，可以详细参考下。</p>
+<h1 id="常见的崩溃原因及解决方案"><a href="#常见的崩溃原因及解决方案" class="headerlink" title="常见的崩溃原因及解决方案"></a>常见的崩溃原因及解决方案</h1><h2 id="集合类插入nil-越界访问"><a href="#集合类插入nil-越界访问" class="headerlink" title="集合类插入nil/越界访问"></a>集合类插入nil/越界访问</h2><p>这些类型崩溃崩溃栈都有很明显的特征，栈顶附近通常带有<strong><em>_objc_exception_throw</em></strong>调用，为App没有处理相关异常，App最终崩溃。像听云/Bugly等第三发服务，会将异常信息打印出来，方便定位。如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1、[NSPlaceholderString initWithFormat:locale:arguments:]: nil argument     </span><br><span class="line">2、setObjectForKey: object cannot be nil</span><br></pre></td></tr></table></figure>
+<p><strong>解决办法</strong>：  </p>
+<ol>
+<li>追踪异常数据的来源，从源头上堵住异常数据。避免一处加了保护，导致脏数据流向别的流程，出发其他异常。  </li>
+<li>给所有集合类加上nil/越界访问保护，例如定义一些<a href="https://github.com/shaojiankui/JKCategories" target="_blank" rel="noopener">Category</a>或<a href="https://neyoufan.github.io/2017/01/13/ios/BayMax_HTSafetyGuard/" target="_blank" rel="noopener">替换一些不安全的方法</a>。但要加上合适的断言/上报机制，尽快发现和处理这种异常情况。</li>
+</ol>
+<h2 id="unrecognized-selector"><a href="#unrecognized-selector" class="headerlink" title="unrecognized selector"></a>unrecognized selector</h2><p><strong>出现这种崩溃的原因通常为：</strong>  </p>
+<ol>
+<li>调用了高版本系统API  </li>
+<li>业务处理逻辑未考虑到某些异常情况，强转类型出错。这种问题很容易出现在含复杂状态管理的业务里</li>
+</ol>
+<p><strong>解决办法</strong>：  </p>
+<ol>
+<li>对于第一种情况，在使用不熟悉的API时，要留意一下可用的系统版本。此外在使用高系统版本的API时，XCode 9会出现警告，多留意一下即可。   </li>
+<li>取决于细不细心啰。   </li>
+<li>或者<a href="http://dev.qq.com/topic/5901b0e2f997cdab7e29cf4c" target="_blank" rel="noopener">利用objc的消息转发机制，动态添加未知的selector的实现</a>。但是这种方法有缺陷，在未知selector的转发流程中，我们拿到的只有selector，没有方法实现，<strong>因此我们不知道此selctor的返回值类型是什么</strong>。假设我们默认返回nil，若此selector原本返回的是对象，则有可能不崩溃。若此selector原本返回的是block/结构体，就会导致别的崩溃。</li>
+</ol>
+<h2 id="Application-received-signal-11-SIGSEGV"><a href="#Application-received-signal-11-SIGSEGV" class="headerlink" title="Application received signal 11/SIGSEGV"></a>Application received signal 11/SIGSEGV</h2><p>出现了非法内存访问，例如</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Application received signal 11</span><br><span class="line"></span><br><span class="line">	1. libobjc.A.dylib 0x1800b9b88 _objc_msgSend + 8</span><br><span class="line">	2. CoreFoundation  0x180a3f1b8 ___rehashd + 152</span><br><span class="line">	3. CoreFoundation  0x180928468 -[__NSDictionaryM setObject:forKey:] + 688</span><br><span class="line">	4. app.            0x10027ba04 [BaseDataModel initialize] (BaseDataModel.m:31)</span><br></pre></td></tr></table></figure>
+<p><strong>出现这种崩溃的原因通常为：</strong>  </p>
+<ol>
+<li>使用了assign作为修饰符，在对象释放之后，仍然进行访问。  </li>
+<li>不同线程同时操作可变集合类/赋值同一个成员变量。</li>
+</ol>
+<p><strong>解决办法</strong>：  </p>
+<ol>
+<li>在合适的时候置为nil或改为用weak修饰。<strong>某些系统API，如CBCentralManager的delegate属性在iOS 11上声明为weak，然而在旧版本上缺声明为assign，所以遇到系统给的delegate，在dealloc时，最好设置为nil。</strong><br><img src="/images/iOSCrashAnalyze/weakassign.png" alt=""></li>
+<li>涉及线程管理，后续再做讨论。</li>
+</ol>
+<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><ul>
+<li><a href="http://www.qidiandasheng.com/2016/04/10/crash-xuebeng/" target="_blank" rel="noopener">iOS崩溃crash大解析</a>  </li>
+<li><a href="http://dev.qq.com/topic/59141e56ca95d00d727ba750" target="_blank" rel="noopener">如何定位Obj-C野指针随机Crash系列</a>   </li>
+<li><a href="http://dev.qq.com/topic/5901ae25520bfb7e51ff52c2" target="_blank" rel="noopener">小萝莉说Crash系列</a></li>
+</ul>
+]]></content>
+      
+        <categories>
+            
+            <category> 崩溃定位及预防 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 崩溃定位 </tag>
+            
+            <tag> 崩溃分析 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+  
+  
+</search>
