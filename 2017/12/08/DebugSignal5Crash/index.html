@@ -90,7 +90,7 @@
 <meta property="og:image" content="http://yoursite.com/images/DebugSignal5Crash/searchResult.png">
 <meta property="og:image" content="http://yoursite.com/images/DebugSignal5Crash/dispatch_resume.png">
 <meta property="og:image" content="http://yoursite.com/images/DebugSignal5Crash/CoreFoundationSource.png">
-<meta property="og:updated_time" content="2017-12-08T07:48:53.067Z">
+<meta property="og:updated_time" content="2017-12-08T07:50:12.706Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="记一次Signal 5崩溃定位（NotDone）">
 <meta name="twitter:description" content="崩溃栈123456789101112131415161718192021222324252627* 1  libdispatch.dylib   0x180506bb0   __dispatch_queue_resume + 624* 2  CoreFoundation      0x18160e22c   ___CFNOTIFICATIONCENTER_IS_CALLING_OUT_TO_AN_">
@@ -409,7 +409,7 @@
 <p>Similar to an Abnormal Exit, this exception is intended to give an attached debugger the chance to interrupt the process at a specific point in its execution. You can trigger this exception from your own code using the __builtin_trap() function. If no debugger is attached, the process is terminated and a crash report is generated.</p>
 <p>Lower-level libraries (e.g, libdispatch) will trap the process upon encountering a fatal error. Additional information about the error can be found in the Additional Diagnostic Information section of the crash report, or in the device’s console.</p>
 </blockquote>
-<p> 这种错误也是属于异常错误，不过常用于连接调试器进行调试。某系底层库在遇到遇到严重错误错误时也会抛出这个错误，例如<strong>libdispatch</strong>。回看这个崩溃的运行栈，位于最顶端的是<strong>__dispatch_queue_resume</strong>，也是属于<strong>libdispatch</strong>这个库，应该是某个地方使用GCD出错。</p>
+<p> 这种错误也是属于异常错误，不过常用于连接调试器进行调试。某系底层库在遇到遇到严重错误时也会抛出这个错误，例如<strong>libdispatch</strong>。回看这个崩溃的运行栈，位于最顶端的是<strong>__dispatch_queue_resume</strong>，也是属于<strong>libdispatch</strong>这个库，应该是某个地方使用GCD出错。</p>
 <h1 id="分析定位"><a href="#分析定位" class="headerlink" title="分析定位"></a>分析定位</h1><p>崩溃的最后一个函数是<strong>__dispatch_queue_resume</strong>，可能和<strong>dispatch_resume</strong>函数有一定的关系，项目中使用地方的印象中应该不多。全局搜索一把，有以下结果：<br><img src="/images/DebugSignal5Crash/searchResult.png" alt=""><br>en…….用的地方还是挺多的，那到底是哪一个函数呢？回看崩溃栈：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">* 7  CoreFoundation      0x18154fbf4   __CFXNotificationPost + 376</span><br><span class="line">* 8  Foundation          0x1820566bc   -[NSNotificationCenter postNotificationName:object:userInfo:] + 68</span><br><span class="line">* 9  UIKit               0x18771d9d8   -[UIApplication _sendWillEnterForegroundCallbacks] + 232</span><br><span class="line">* 10 UIKit               0x187758ebc   -[UIApplication _handleApplicationActivationWithScene:transitionContext:completion:] + 2140</span><br><span class="line">* 11 UIKit               0x1877583ec   -[UIApplication _handleApplicationLifecycleEventWithScene:transitionContext:completion:] + 452</span><br><span class="line">* 12 UIKit               0x187743ae8   ___70-[UIApplication scene:didUpdateWithDiff:transitionContext:completion:]_block_invoke + 152</span><br></pre></td></tr></table></figure>
 <p>这几个函数指明此时App刚进入前台，正在广播ApplicationWillEnterForeground通知，看刚才的搜索结果，可以确认出问题的代码应该在<strong>[LEColorPicker appDidEnterForeground:]</strong>方法上。</p>
