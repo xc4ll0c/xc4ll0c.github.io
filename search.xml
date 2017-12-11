@@ -3,6 +3,35 @@
   
     
     <entry>
+      <title><![CDATA[记一次UIWebView signal 11崩溃定位]]></title>
+      <url>/2017/12/08/DebugWebViewSignal11Crash2/</url>
+      <content type="html"><![CDATA[<h1 id="崩溃信息"><a href="#崩溃信息" class="headerlink" title="崩溃信息"></a>崩溃信息</h1><p>线程：WebThread<br>崩溃栈：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">1  libGPUSupportMercury.dylib  0x190e66f90  &lt;redacted&gt;</span><br><span class="line">2  AGXGLDriver                 0x19587e1bc  _gldUpdateDispatch</span><br><span class="line">3  libGPUSupportMercury.dylib  0x190e67f40  _gpusSubmitDataBuffers</span><br><span class="line">4  AGXGLDriver                 0x19587f77c  _gldUpdateDispatch</span><br><span class="line">5  GLEngine                    0x1960c3a80  _gliBindViewES</span><br><span class="line">6  OpenGLES                    0x183c8eb20  -[EAGLContext renderbufferStorage:fromDrawable:] + 504</span><br><span class="line">7  WebCore                     0x1865de15c  WebCore::GraphicsContext3D::~GraphicsContext3D() + 116</span><br><span class="line">8  WebCore                     0x186fb895c  WebCore::WebGLRenderingContextBase::destroyGraphicsContext3D() + 148</span><br><span class="line">9  WebCore                     0x186fb82ac  WebCore::WebGLRenderingContextBase::~WebGLRenderingContextBase() + 744</span><br><span class="line">10 WebCore                     0x186fb5c0c  WebCore::WebGLRenderingContext::~WebGLRenderingContext() + 12</span><br><span class="line">11 WebCore                     0x18660e8e4  WebCore::HTMLCanvasElement::~HTMLCanvasElement() + 200</span><br><span class="line">12 WebCore                     0x18660ea98  WebCore::HTMLCanvasElement::~HTMLCanvasElement() + 12</span><br></pre></td></tr></table></figure>
+<p>用户使用轨迹：<br><img src="/images/DebugWebViewSignal11Crash2/track.png" alt=""><br>系统分布：<br><img src="/images/DebugWebViewSignal11Crash2/os.png" alt=""><br>webview加载的链接：<br><a href="https://h5.youzan.com/v2/common/prefetching" target="_blank" rel="noopener">https://h5.youzan.com/v2/common/prefetching</a></p>
+<h1 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h1><p>综合上面的信息，用户是在浏览与<strong><a href="https://h5.youzan.com/v2/common/prefetching" target="_blank" rel="noopener">https://h5.youzan.com/v2/common/prefetching</a></strong>相关的网页，进入后台一段时间后就发生崩溃。根据官方的Technical Note <a href="https://developer.apple.com/library/content/qa/qa1766/_index.html" target="_blank" rel="noopener">How to fix OpenGL ES application crashes when moving to the background</a>，类比下崩溃栈，可以确定下来是webview在后台调用OPenGL ES进行渲染所致。在重现中也发现，除了加载<strong><a href="https://h5.youzan.com/v2/common/prefetching" target="_blank" rel="noopener">https://h5.youzan.com/v2/common/prefetching</a></strong>时进入后台可能会崩溃，加载<a href="https://threejs.org/examples/#webgl_animation_cloth" target="_blank" rel="noopener">含WebGL动画的网页</a>时进入后台也容易出现崩溃。</p>
+<h1 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h1><p>监听WillResignActive通知，强制加载一个空白界面，在WillEnterForground时再重新加载原来的链接。但是会导致重新加载界面，用户体验不佳。后面尝试切换至WKWebView，加载上述两个链接时进入后台均不会出发崩溃。所以最终放弃了UIWebView转向了WKWebView。</p>
+]]></content>
+      
+        <categories>
+            
+            <category> 踩坑记录 </category>
+            
+            <category> 崩溃定位及预防 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> 踩坑记录 </tag>
+            
+            <tag> 崩溃分析 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
       <title><![CDATA[记一次UIWebView _WTFCrash崩溃定位]]></title>
       <url>/2017/12/08/DebugWebViewSignal11Crash/</url>
       <content type="html"><![CDATA[<h1 id="WTFCrash-崩溃信息"><a href="#WTFCrash-崩溃信息" class="headerlink" title="_WTFCrash 崩溃信息"></a>_WTFCrash 崩溃信息</h1><p>线程：WebThread<br>崩溃栈：</p>
