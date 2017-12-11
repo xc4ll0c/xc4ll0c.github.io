@@ -79,13 +79,13 @@
 
 
 
-<meta name="description" content="前言崩溃的出现意味着代码出现了问题，通常的解决路径是根据测试/用户/日志文件的行为描述，试图重现崩溃，定位到具体的代码位置，分析出现的原因，找到根治的办法，最后验证解决方案以确认崩溃被修复。那么我们该如何去搜集、分析、解决崩溃呢，请看下文。 如何收集崩溃信息？官方渠道XCode Organizer在Xcode-&amp;gt;Window-&amp;gt;Organizer选择已上架的App看以查看到每个版本中A">
+<meta name="description" content="前言崩溃的出现意味着代码出现了问题，通常的解决路径是根据测试/用户/日志文件的行为描述，试图重现崩溃，定位到具体的代码位置，分析出现的原因，找到根治的办法，最后验证解决方案以确认崩溃被修复。那么我们该如何去搜集、分析、解决崩溃呢，请看下文。">
 <meta name="keywords" content="崩溃分析,崩溃定位">
 <meta property="og:type" content="article">
 <meta property="og:title" content="iOS崩溃crash收集及分析">
 <meta property="og:url" content="http://yoursite.com/2017/12/06/iOSCrashAnalyze/index.html">
 <meta property="og:site_name" content="xc4ll0c">
-<meta property="og:description" content="前言崩溃的出现意味着代码出现了问题，通常的解决路径是根据测试/用户/日志文件的行为描述，试图重现崩溃，定位到具体的代码位置，分析出现的原因，找到根治的办法，最后验证解决方案以确认崩溃被修复。那么我们该如何去搜集、分析、解决崩溃呢，请看下文。 如何收集崩溃信息？官方渠道XCode Organizer在Xcode-&amp;gt;Window-&amp;gt;Organizer选择已上架的App看以查看到每个版本中A">
+<meta property="og:description" content="前言崩溃的出现意味着代码出现了问题，通常的解决路径是根据测试/用户/日志文件的行为描述，试图重现崩溃，定位到具体的代码位置，分析出现的原因，找到根治的办法，最后验证解决方案以确认崩溃被修复。那么我们该如何去搜集、分析、解决崩溃呢，请看下文。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/iOSCrashAnalyze/ItunesConnectShot.png">
 <meta property="og:image" content="http://yoursite.com/images/iOSCrashAnalyze/tingyun1.png">
@@ -94,10 +94,10 @@
 <meta property="og:image" content="http://yoursite.com/images/iOSCrashAnalyze/bugly2.png">
 <meta property="og:image" content="http://yoursite.com/images/iOSCrashAnalyze/umeng.png">
 <meta property="og:image" content="http://yoursite.com/images/iOSCrashAnalyze/weakassign.png">
-<meta property="og:updated_time" content="2017-12-08T08:34:08.692Z">
+<meta property="og:updated_time" content="2017-12-11T07:05:53.423Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS崩溃crash收集及分析">
-<meta name="twitter:description" content="前言崩溃的出现意味着代码出现了问题，通常的解决路径是根据测试/用户/日志文件的行为描述，试图重现崩溃，定位到具体的代码位置，分析出现的原因，找到根治的办法，最后验证解决方案以确认崩溃被修复。那么我们该如何去搜集、分析、解决崩溃呢，请看下文。 如何收集崩溃信息？官方渠道XCode Organizer在Xcode-&amp;gt;Window-&amp;gt;Organizer选择已上架的App看以查看到每个版本中A">
+<meta name="twitter:description" content="前言崩溃的出现意味着代码出现了问题，通常的解决路径是根据测试/用户/日志文件的行为描述，试图重现崩溃，定位到具体的代码位置，分析出现的原因，找到根治的办法，最后验证解决方案以确认崩溃被修复。那么我们该如何去搜集、分析、解决崩溃呢，请看下文。">
 <meta name="twitter:image" content="http://yoursite.com/images/iOSCrashAnalyze/ItunesConnectShot.png">
 
 
@@ -394,7 +394,7 @@
       
 
       
-        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>崩溃的出现意味着代码出现了问题，通常的解决路径是根据测试/用户/日志文件的行为描述，试图重现崩溃，定位到具体的代码位置，分析出现的原因，找到根治的办法，最后验证解决方案以确认崩溃被修复。那么我们该如何去搜集、分析、解决崩溃呢，请看下文。</p>
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>崩溃的出现意味着代码出现了问题，通常的解决路径是根据测试/用户/日志文件的行为描述，试图重现崩溃，定位到具体的代码位置，分析出现的原因，找到根治的办法，最后验证解决方案以确认崩溃被修复。那么我们该如何去搜集、分析、解决崩溃呢，请看下文。<br><a id="more"></a></p>
 <h1 id="如何收集崩溃信息？"><a href="#如何收集崩溃信息？" class="headerlink" title="如何收集崩溃信息？"></a>如何收集崩溃信息？</h1><h2 id="官方渠道XCode-Organizer"><a href="#官方渠道XCode-Organizer" class="headerlink" title="官方渠道XCode Organizer"></a>官方渠道XCode Organizer</h2><p>在Xcode-&gt;Window-&gt;Organizer选择已上架的App看以查看到每个版本中App的崩溃情况，如下图：<br><img src="/images/iOSCrashAnalyze/ItunesConnectShot.png" alt=""><br>优点：  </p>
 <ol>
 <li>自动符号化崩溃栈，甚至可以直接打开项目，跳转到相关文件代码</li>
