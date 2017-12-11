@@ -293,6 +293,179 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/11/DebugInitializeSignal11Crash/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wenZheng zhang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="xc4ll0c">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/12/11/DebugInitializeSignal11Crash/" itemprop="url">记一次+initialize:函数线程安全问题导致的崩溃</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-11T15:53:27+08:00">
+                2017-12-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/踩坑记录/" itemprop="url" rel="index">
+                    <span itemprop="name">踩坑记录</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/踩坑记录/崩溃定位及预防/" itemprop="url" rel="index">
+                    <span itemprop="name">崩溃定位及预防</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="崩溃信息"><a href="#崩溃信息" class="headerlink" title="崩溃信息"></a>崩溃信息</h1><p>崩溃线程：任意线程<br>崩溃栈：Application received signal 11</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">1 libobjc.A.dylib  0x1800bc148  _objc_msgSend + 8</span><br><span class="line">2 CoreFoundation   0x181642cf8  ___rehashd + 144</span><br><span class="line">3 CoreFoundation   0x18152a434  -[__NSDictionaryM setObject:forKey:] + 676</span><br><span class="line">4 MyApp            0x10027ba04  +[BaseDataModel initialize] (BaseDataModel.m:31)</span><br><span class="line">5 libobjc.A.dylib  0x1800a9418  _CALLING_SOME_+initialize_METHOD + 24</span><br><span class="line">6 libobjc.A.dylib  0x1800a9684  __class_initialize + 612</span><br><span class="line">7 libobjc.A.dylib  0x1800b14b4  _lookUpImpOrForward + 228</span><br><span class="line">8 libobjc.A.dylib  0x1800bc478  __objc_msgSend_uncached + 56</span><br><span class="line">9 MyApp            0x1001bbf64  -[HeartRateManager loadNewestdayHeartRateWithUserId:deviceId:] (HeartRateManager.m:1413)</span><br></pre></td></tr></table></figure>
+<p>用户使用轨迹：<br><img src="/images/DebugInitializeSignal11Crash/track.png" alt=""><br>系统分布：<br><img src="/images/DebugInitializeSignal11Crash/os.png" alt=""></p>
+<h1 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h1><p>看使用轨迹是用户刚打开App，BaseDataModel在+initialize:函数中做某些初始化操作时发生了崩溃。看看崩溃函数相关的源码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">static NSMutableDictionary* gClassRemovedPropertiesMapDict = nil;</span><br><span class="line">@implementation BaseDataModel</span><br><span class="line">+(void)initialize</span><br><span class="line">&#123;</span><br><span class="line">    //记录当前所有的Properties,没有映射的就remove掉</span><br><span class="line">    if (gClassRemovedPropertiesMapDict == nil)</span><br><span class="line">    &#123;</span><br><span class="line">        gClassRemovedPropertiesMapDict = [NSMutableDictionary dictionary];</span><br><span class="line">    &#125;</span><br><span class="line">    LKModelInfos* info = [[self class] getModelInfos];</span><br><span class="line">    NSMutableArray* pptArray = [NSMutableArray array];</span><br><span class="line">    for (int i = 0; i &lt; info.count; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        LKDBProperty* ppt = [info objectWithIndex:i];</span><br><span class="line">        NSString* pptName = ppt.propertyName;</span><br><span class="line">        [pptArray addObject:pptName];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    // 崩溃的函数</span><br><span class="line">    [gClassRemovedPropertiesMapDict setObject:pptArray forKey:NSStringFromClass([self class])];</span><br><span class="line">    </span><br><span class="line">    [self mapRelation];</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<p>崩溃栈顶的函数为<strong>_objc_msgSend</strong>，出现在可变字典设置键值对时:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[gClassRemovedPropertiesMapDict setObject:pptArray forKey:NSStringFromClass([self class])];</span><br></pre></td></tr></table></figure>
+<p>由于<strong>NSMutableDictionary</strong>为非线程安全，在多个线程同时访问时会出现问题。但是印象中，+initialize:应该是线程安全的，当ClassA在ThreadA上被触发+initialize:时，其他线程线程向此类的发起的消息都会被阻塞。+initialize:的注释如下：</p>
+<blockquote>
+<p>Initializes the class before it receives its first message.<br>The runtime sends initialize to each class in a program just before the class, or any class that inherits from it, is sent its first message from within the program. Superclasses receive this message before their subclasses.    </p>
+<p>The runtime sends the initialize message to classes in a thread-safe manner. That is, initialize is run by the first thread to send a message to a class, and any other thread that tries to send a message to that class will block until initialize completes.  </p>
+</blockquote>
+<p>如上面所说，当ClassA在ThreadA上被触发+initialize:时，其他线程线程向此类的发起的消息都会被阻塞。</p>
+<blockquote>
+<p>The superclass implementation may be called multiple times if subclasses do not implement initialize—the runtime will call the inherited implementation—or if subclasses explicitly call [super initialize]. If you want to protect yourself from being run multiple times, you can structure your implementation along these lines:      </p>
+</blockquote>
+<p>但是上面一段又补充道：当子类没有实现+initialize:方法是，父类的+initialize:方法就会被调用。这点倒是符合BaseDataModel的+initialize:被调用的场景。继承于BaseDataModel的DataModel，都没有实现+initialize:方法，均依赖于父类BaseDataModel的+initialize:方法来做初始化。那在这中场景下，共享了父类中的+initialize:实现的两个子类，当在两个线程同时调起时，其+initialize:调用逻辑是串行安全的？还是并行执行的？<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/12/11/DebugInitializeSignal11Crash/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/11/DebugWebViewSignal11Crash2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -949,7 +1122,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
